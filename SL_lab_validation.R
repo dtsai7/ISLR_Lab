@@ -7,7 +7,7 @@ plot(mpg~horsepower, data = Auto)
 ## leave-one-out cross-validation (LOOCV)
 glm.fit = glm(mpg~horsepower, data = Auto)
 cv.glm(Auto, glm.fit)$delta
-# result: [1] 24.23151 24.23114
+# output: 24.23151 24.23114
 # time consuming if n is large
 # therefore, we need the formula to speed up the process
 
@@ -18,6 +18,8 @@ loocv = function(fit){
   mean((residuals(fit)/(1-h))^2)
   
 }
+
+
 
 
 loocv(glm.fit)
@@ -46,4 +48,33 @@ for (d in degree){
 lines(degree, cv.error10, type = "b", col = "red")
 
 
+
+## Bootstrap
+## minimum risk investment
+alpha = function(x, y){
+  vx = var(x)
+  vy = var(y)
+  cxy = cov(x, y)
+  (vy - cxy) / (vx + vy - 2*cxy)
+  
+}
+
+alpha(Portfolio$X, Portfolio$Y)
+# output: 0.5758321
+
+
+## standard error of alpha
+alpha.fn = function(data, index){
+  with(data[index,], alpha(X, Y))
+}
+
+alpha.fn(Portfolio, 1:100)
+# output: 0.5758321
+
+set.seed(1)
+alpha.fn(Portfolio, sample(1:100, 100, replace = TRUE))
+# output: 0.7368375
+
+boot.out = boot(Portfolio, alpha.fn, R = 1000)
+plot(boot.out)
 
