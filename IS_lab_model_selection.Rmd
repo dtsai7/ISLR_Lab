@@ -52,5 +52,20 @@ plot(regfit.full, scale = "Cp")
 coef(regfit.full, 10)
 ```
 
+## Forward Stepwise Selection
+Use the 'regsubsets' function but specify the method to forward
+```{r}
+regfit.fwd = regsubsets(Salary~., data = Hitters, nvmax = 19, method = "forward")
+summary(regfit.fwd)
+plot(regfit.fwd, scale = "Cp")
+```
+
+## Backward Stepwise Selection
+Use the 'regsubsets' function but specify the method to backward
+```{r}
+regfit.bwd = regsubsets(Salary~., data = Hitters, nvmax = 19, method = "backward")
+summary(regfit.bwd)
+plot(regfit.bwd, scale = "Cp")
+```
 
 
