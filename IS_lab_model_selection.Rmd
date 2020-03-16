@@ -138,5 +138,14 @@ cv.ridge = cv.glmnet(x, y, alpha = 0)
 plot(cv.ridge)
 ```
 
+Now fit a lasso-regression model with alpha = 1
+```{r}
+fit.lasso = glmnet(x, y, alpha = 1)
+plot(fit.lasso, xvar = "lambda", label = TRUE)
+plot(fit.lasso, xvar = "dev", label = TRUE)
 
+cv.lasso = cv.glmnet(x, y, alpha = 1)
+plot(cv.lasso)
+coef(cv.lasso)
+```
 
