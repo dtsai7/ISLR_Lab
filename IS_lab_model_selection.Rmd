@@ -149,3 +149,17 @@ plot(cv.lasso)
 coef(cv.lasso)
 ```
 
+Use earlier train/validation division to select the lambda for the lasso.
+```{r}
+lasso.tr = glmnet(x[train,], y[train])
+
+pred = predict(lasso.tr, x[-train,])
+dim(pred)
+
+rmse = sqrt(apply((y[-train] - pred)^2, 2, mean))
+plot(log(lasso.tr$lambda), rmse, type = "b", xlab = "Log(lambda)")
+lam.best = lasso.tr$lambda[order(rmse)[1]]
+coef(lasso.tr, s = lam.best)
+```
+
+
