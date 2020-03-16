@@ -120,3 +120,23 @@ for (k in 1:10){
 rmse.cv = sqrt(apply(cv.errors, 2, mean))
 plot(rmse.cv, pch = 19, type ="b")
 ```
+
+## Ridge Regression and Lasso Regression
+```{r}
+library(glmnet)
+x = model.matrix(Salary~.-1, data = Hitters) #-1 for removing Salary
+y = Hitters$Salary
+```
+
+Fit a ridge-regression model by calling 'glmnet' with 'alpha = 0'
+('cv.glmnet' for cross-validation)
+```{r}
+fit.ridge = glmnet(x, y, alpha = 0)
+plot(fit.ridge, xvar = "lambda", label = TRUE)
+
+cv.ridge = cv.glmnet(x, y, alpha = 0)
+plot(cv.ridge)
+```
+
+
+
