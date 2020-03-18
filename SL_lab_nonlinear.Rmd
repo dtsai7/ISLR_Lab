@@ -86,3 +86,24 @@ matplot(age.grid, prob.bands, col = "blue",
 points(jitter(age), I(wage > 250)/10, pch = "I", cex = .5)
 ```
 
+
+## Splines
+```{r}
+require(splines)
+fit = lm(wage ~ bs(age, knot = c(25, 40, 60)), data = Wage)
+plot(age, wage, col = "darkgrey")
+lines(age.grid, predict(fit, list(age = age.grid)), 
+      col = "darkgreen", lwd = 2)
+abline(v = c(25, 40, 60), lty = 2, col = "darkgreen")
+
+# smoothing splines
+fit = smooth.spline(age, wage, df = 16) # 16 degrees of freedom
+lines(fit, col = "red", lwd = 2)
+
+
+#leave-one-out cross validation to select the smoothing parameter
+fit = smooth.spline(age, wage, cv = TRUE)
+lines(fit, col = "purple", lwd = 2)
+fit
+```
+
