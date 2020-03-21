@@ -1,0 +1,74 @@
+---
+title: "SL_lab_SVM"
+author: "David Tsai"
+date: "3/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## SVM
+To demonstrate the SVM, it is easiedt to work in low dimensions.
+
+
+# Linear SVM Classifier
+Generate some data in two dimensions
+```{r}
+set.seed(10111)
+x = matrix(rnorm(40), 20, 2)
+y = rep(c(-1, 1), c(10, 10))
+x[y == 1, ] = x[y == 1, ] + 1
+plot(x, col = y + 3, pch = 19)
+```
+
+Load the package 'e1071' which contains the function 'svm'.
+Have to specify a 'cost' parameter, which is a tuning parameter.
+```{r}
+library(e1071)
+data.svm = data.frame(x, y = as.factor(y))
+svmfit = svm(y ~ ., data = data.svm, kernel = "linear", 
+             cost = 10,  scale = FALSE) # not standardizing the variables
+print(svmfit)
+plot(svmfit, data.svm)
+```
+
+Make our own plot
+
+1st. Make a grid of values for X1 and X2. Write a function to do it.
+```{r}
+make.grid = function(x, n = 75){
+  grange = apply(x, 2, range)
+  x1 = seq(from = grange[1, 1], to = grange[2, 1], length = n)
+  x2 = seq(from = grange[1, 2], to = grange[2, 2], length = n)
+  expand.grid(X1 = x1, X2 = x2)
+}
+
+xgrid = make.grid(x)
+ygrid = predict(svmfit, xgrid)
+plot(xgrid, col = c("red", "blue")[as.numeric(ygrid)], pch = 20, cex = .2)
+points(x, col = y + 3, pch = 19)
+points(x[svmfit$index, ], pch = 5, cex = 2)
+```
+
+
+Use a formula to extract coefficients
+
+Extract linear coefficients, and then using simple algebra, include the decision boundary and the two margins.
+```{r}
+beta = drop(t(svmfit$coefs) %*% x[svmfit$index, ])
+beta0 = svmfit$rho
+
+plot(xgrid, col = c("red", "blue")[as.numeric(ygrid)], pch = 20, cex = .2)
+points(x, col = y + 3, pch = 19)
+points(x[svmfit$index, ], pch = 5, cex = 2)
+
+abline(beta0/beta[2], -beta[1]/beta[2])
+abline((beta0-1)/beta[2], -beta[1]/beta[2], lty = 2) # upper margin
+abline((beta0+ 1)/beta[2], -beta[1]/beta[2], lty = 2) # lower margin
+```
+
+
+
+
