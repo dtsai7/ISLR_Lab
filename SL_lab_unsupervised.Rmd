@@ -1,0 +1,29 @@
+---
+title: "SL_lab_unsupervised"
+author: "David Tsai"
+date: "3/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Principal Components
+```{r}
+dimnames(USArrests)
+apply(USArrests, 2, mean)
+apply(USArrests, 2, var)
+```
+
+
+Standardize the variables
+```{r}
+pca.out = prcomp(USArrests, scale = T)
+pca.out
+names(pca.out)
+biplot(pca.out, cex = .5, scale = 0)
+```
+
+
+
